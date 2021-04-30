@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1619796396 source:c:\users\strobl\documents\github\pong-sfml\pong\main.cpp
+1619803000 source:c:\users\strobl\documents\github\pong-sfml\pong\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
+	<cmath>
 
 1525815618 d:\code_blocks\librarys\sfml-2.5.1\include\sfml\graphics.hpp
 	<SFML/Window.hpp>

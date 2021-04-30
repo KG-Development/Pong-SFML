@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath>
 
 bool AABB(sf::RectangleShape &a, sf::RectangleShape &b);
 void drawField(sf::RenderWindow &window);
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer);
-
+void rgb(sf::RectangleShape &obj, float i);
 const int WINDOW_MAX_X = 1000;
 const int WINDOW_MAX_Y = 500;
 
@@ -29,6 +30,7 @@ int main(){
     float speed = 200;
     float ballSpeed = 200;
     float delay = 0;
+    float index = 0;
     int gameState = 0; //0 Pause //1 Run //2 Game Over only if one reach the score 10
     sf::Vector2f ballVec(1, 0);
 
@@ -37,6 +39,11 @@ int main(){
         deltaTime = current.restart().asSeconds();
         sf::Event event;
 
+        if(index < (2*3.64)){
+            index += 1;
+        }else{
+            index = 0;
+        }
         if(ballSpeed >= 200.1){
             ballSpeed -= deltaTime;
         }
@@ -54,6 +61,8 @@ int main(){
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && delay <= 0){
                 gameState = 1;
                 delay = 0.1;
+            }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)){
+                window.close();
             }
             break;
         case 2:
@@ -102,6 +111,7 @@ int main(){
                     ballVec.x *= -1;
                     ballVec.y = 0;
                 }
+                //rgb(ball, index);
                 ball.move((ballVec.x * ballSpeed) * deltaTime, (ballVec.y * ballSpeed) * deltaTime);
 
                 std::cout << "First Player[ Y: " << leftPlayer.getPosition().y << " ] "
@@ -121,6 +131,12 @@ int main(){
         window.display();
     }
     return 0;
+}
+void rgb(sf::RectangleShape &obj, float i){
+
+    float index = (float) sin((double) i);
+    obj.setFillColor(sf::Color(index, index, index));
+
 }
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer){
 
