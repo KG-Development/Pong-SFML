@@ -20,13 +20,13 @@ int main(){
 
     while(menu(window));
 
-    leftPlayer.setPosition({20, (WINDOW_MAX_Y) /2});
+    leftPlayer.setPosition({20, (WINDOW_MAX_Y - 100) /2});
     leftPlayer.setFillColor(sf::Color::White);
 
-    rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y) / 2});
+    rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y - 100) / 2});
     rightPlayer.setFillColor(sf::Color::White);
 
-    ball.setPosition({(WINDOW_MAX_X) / 2, (WINDOW_MAX_Y) / 2});
+    ball.setPosition({(WINDOW_MAX_X) / 2, (WINDOW_MAX_Y - 100) / 2});
     ball.setFillColor(sf::Color::White);
 
     sf::Clock current;
@@ -110,7 +110,7 @@ int main(){
                 if(ball.getPosition().y < 20 || ball.getPosition().y > WINDOW_MAX_Y - 40){
                     ballVec.y *= -1;
                     ball.setPosition(ball.getPosition().x, ball.getPosition().y + ballVec.y);
-                }else if(ball.getPosition().x < 20 || ball.getPosition().x > WINDOW_MAX_X - 40){
+                }else if(ball.getPosition().x < 40 || ball.getPosition().x > WINDOW_MAX_X - 40){
                     reset(leftPlayer, ball, rightPlayer);
                     ballVec.x *= -1;
                     ballVec.y = 0;
