@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cmath>
+#include <string>
 
 bool AABB(sf::RectangleShape &a, sf::RectangleShape &b);
 void drawField(sf::RenderWindow &window);
@@ -9,7 +10,7 @@ void rgb(sf::RectangleShape &obj, float i);
 const int WINDOW_MAX_X = 1500;
 const int WINDOW_MAX_Y = 820;
 
-bool menu(sf::RenderWindow &menu);
+bool menu(sf::RenderWindow &menu, sf::Font &font);
 
 int main(){
 
@@ -18,7 +19,10 @@ int main(){
     sf::RectangleShape leftPlayer({20, 100});
     sf::RectangleShape rightPlayer({20, 100});
 
-    while(menu(window));
+    sf::Font font;
+    font.loadFromFile(".\\assets\\fonts\\origa___.ttf");
+
+    while(menu(window, font));
 
     leftPlayer.setPosition({20, (WINDOW_MAX_Y - 100) /2});
     leftPlayer.setFillColor(sf::Color::White);
@@ -26,7 +30,7 @@ int main(){
     rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y - 100) / 2});
     rightPlayer.setFillColor(sf::Color::White);
 
-    ball.setPosition({(WINDOW_MAX_X) / 2, (WINDOW_MAX_Y - 100) / 2});
+    ball.setPosition({(WINDOW_MAX_X - 20) / 2, (WINDOW_MAX_Y - 100) / 2});
     ball.setFillColor(sf::Color::White);
 
     sf::Clock current;
@@ -35,13 +39,38 @@ int main(){
     float ballSpeed = 200;
     float delay = 0;
     float index = 0;
-    int gameState = 0; //0 Pause //1 Run //2 Game Over only if one reach the score 10
+    int gameState = 0; //0 Pause //1 Run //2 Game Over only if one reaches the score 10
+    sf::Text scoreLeft("0 ", font), scoreRight(" 0", font);
+    std::string scoreL = "8  ", scoreR = "  0";
+    sf::Text gameOver("Game Over!", font), gameOver2("Press Escape to exit.", font);
     sf::Vector2f ballVec(1, 0);
 
-    while (window.isOpen())
-    {
+    //setting the scores up and giving them a position
+    scoreLeft.setCharacterSize(45);
+    scoreRight.setCharacterSize(45);
+
+    scoreLeft.setStyle(sf::Text::Bold);
+    scoreRight.setStyle(sf::Text::Bold);
+
+    scoreLeft.setFillColor(sf::Color::White);
+    scoreRight.setFillColor(sf::Color::White);
+
+    sf::FloatRect textRect;
+
+    while (window.isOpen()) {
         deltaTime = current.restart().asSeconds();
         sf::Event event;
+
+        scoreLeft.setString(scoreL);
+        scoreRight.setString(scoreR);
+
+        textRect = scoreLeft.getLocalBounds();
+        scoreLeft.setOrigin(textRect.width / 2, 0);
+        scoreLeft.setPosition(WINDOW_MAX_X / 2.0 - 40, 25);
+
+        textRect = scoreRight.getLocalBounds();
+        scoreRight.setOrigin(textRect.width / 2, 0);
+        scoreRight.setPosition(WINDOW_MAX_X / 2.0 + 40, 25);
 
         if(index < (2*3.64)){
             index += 1;
@@ -70,6 +99,26 @@ int main(){
             }
             break;
         case 2:
+            window.clear(sf::Color(0, 0, 0));
+            gameOver.setCharacterSize(60);
+            gameOver.setStyle(sf::Text::Bold);
+            gameOver.setFillColor(sf::Color::White);
+
+            gameOver2.setCharacterSize(40);
+            gameOver2.setStyle(sf::Text::Bold);
+            gameOver2.setFillColor(sf::Color::White);
+
+            textRect = gameOver.getLocalBounds();
+            gameOver.setOrigin(textRect.width / 2, 0);
+            gameOver.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 2.5);
+
+            textRect = gameOver2.getLocalBounds();
+            gameOver2.setOrigin(textRect.width / 2, 0);
+            gameOver2.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 2.0);
+
+            window.draw(gameOver);
+            window.draw(gameOver2);
+            window.display();
             break;
         case 1:
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && delay <= 0){
@@ -111,11 +160,27 @@ int main(){
                     ballVec.y *= -1;
                     ball.setPosition(ball.getPosition().x, ball.getPosition().y + ballVec.y);
                 }else if(ball.getPosition().x < 40 || ball.getPosition().x > WINDOW_MAX_X - 40){
+                    if (!(ball.getPosition().x > WINDOW_MAX_X - 40)) {
+                        if (scoreR[1] == '9') {
+                            gameState = 2;
+                            scoreR[2] = 48;
+                            scoreR[1] = 49;
+                        }else {
+                            scoreR[1] += 1;
+                        }
+                    }else {
+                        if (scoreL[0] == '9') {
+                            gameState = 2;
+                            scoreL[0] = 49;
+                            scoreL[1] = 48;
+                        }else {
+                            scoreL[0] += 1;
+                        }
+                    }
                     reset(leftPlayer, ball, rightPlayer);
                     ballVec.x *= -1;
                     ballVec.y = 0;
                 }
-                //rgb(ball, index);
                 ball.move((ballVec.x * ballSpeed) * deltaTime, (ballVec.y * ballSpeed) * deltaTime);
 
                 std::cout << "First Player[ Y: " << leftPlayer.getPosition().y << " ] "
@@ -127,12 +192,20 @@ int main(){
 
             break;
             }
-        window.clear();
-        drawField(window);
-        window.draw(ball);
-        window.draw(leftPlayer);
-        window.draw(rightPlayer);
-        window.display();
+        if (gameState != 2) {
+            window.clear();
+            drawField(window);
+            window.draw(ball);
+            window.draw(leftPlayer);
+            window.draw(rightPlayer);
+            window.draw(scoreLeft);
+            window.draw(scoreRight);
+            window.display();
+        }else {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                break;
+            }
+        }
     }
     return 0;
 }
@@ -149,7 +222,6 @@ void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::Rectang
 }
 
 void drawField(sf::RenderWindow &window){
-
     float y = 20;
     sf::RectangleShape shapes[21];
     sf::RectangleShape lines[2];
@@ -179,13 +251,10 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b){
 }
 
 
-bool menu(sf::RenderWindow &menu) {
+bool menu(sf::RenderWindow &menu, sf::Font &font) {
     sf::Event event;
 
     while (menu.isOpen()) {
-        sf::Font font;
-        font.loadFromFile(".\\assets\\fonts\\origa___.ttf");
-
         sf::Text textWelcome("Welcome to Pong!", font);
         sf::Text textChoice("Press left click to continue!", font);
 
