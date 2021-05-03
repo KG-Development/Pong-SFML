@@ -6,8 +6,8 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b);
 void drawField(sf::RenderWindow &window);
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer);
 void rgb(sf::RectangleShape &obj, float i);
-const int WINDOW_MAX_X = 1000;
-const int WINDOW_MAX_Y = 500;
+const int WINDOW_MAX_X = 1500;
+const int WINDOW_MAX_Y = 820;
 
 bool menu(sf::RenderWindow &menu);
 
@@ -20,13 +20,13 @@ int main(){
 
     while(menu(window));
 
-    leftPlayer.setPosition({20, (WINDOW_MAX_Y - 100) /2});
+    leftPlayer.setPosition({20, (WINDOW_MAX_Y) /2});
     leftPlayer.setFillColor(sf::Color::White);
 
-    rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y - 100) / 2});
+    rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y) / 2});
     rightPlayer.setFillColor(sf::Color::White);
 
-    ball.setPosition({(WINDOW_MAX_X - 20) / 2, (WINDOW_MAX_Y - 20) / 2});
+    ball.setPosition({(WINDOW_MAX_X) / 2, (WINDOW_MAX_Y) / 2});
     ball.setFillColor(sf::Color::White);
 
     sf::Clock current;
@@ -73,8 +73,8 @@ int main(){
             break;
         case 1:
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && delay <= 0){
-                        gameState = 0;
-                        delay = 0.1;
+                    gameState = 0;
+                    delay = 0.1;
                 }
                 if( sf::Keyboard::isKeyPressed(sf::Keyboard::W) && leftPlayer.getPosition().y > 20 ){
                     leftPlayer.move(0.0, -speed * deltaTime);
@@ -151,19 +151,19 @@ void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::Rectang
 void drawField(sf::RenderWindow &window){
 
     float y = 20;
-    sf::RectangleShape shapes[12];
+    sf::RectangleShape shapes[21];
     sf::RectangleShape lines[2];
 
-    for(int i = 0; i < 12; i++){
+    for(int i = 0; i < 21; i++){
         shapes[i].setFillColor(sf::Color(115, 115, 115));
         shapes[i].setSize({20, 20});
-        shapes[i].setPosition({(1000 - 20) / 2, y});
+        shapes[i].setPosition({(1500 - 20) / 2, y});
         y += 40;
         window.draw(shapes[i]);
         if(i < 2){
-            lines[i].setSize({1000, 20});
+            lines[i].setSize({1500, 20});
             lines[i].setFillColor(sf::Color(115, 115, 115));
-            lines[i].setPosition({0, (float)(500 - 20) * i});
+            lines[i].setPosition({0, (float)(820 - 20) * i});
             window.draw(lines[i]);
         }
 
