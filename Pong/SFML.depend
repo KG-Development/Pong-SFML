@@ -1,8 +1,10 @@
 # depslib dependency file v1.0
-1619803000 source:c:\users\strobl\documents\github\pong-sfml\pong\main.cpp
+1620074129 source:c:\users\strobl\documents\github\pong-sfml\pong\main.cpp
 	<SFML/Graphics.hpp>
+	"GameObject.h"
 	<iostream>
 	<cmath>
+	<string>
 
 1525815618 d:\code_blocks\librarys\sfml-2.5.1\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
@@ -827,4 +829,10 @@
 	<SFML/Graphics/PrimitiveType.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
+
+1620073472 source:c:\users\strobl\documents\github\pong-sfml\pong\src\gameobject.cpp
+	"GameObject.h"
+
+1620074079 c:\users\strobl\documents\github\pong-sfml\pong\include\gameobject.h
+	<SFML/Graphics.hpp>
 

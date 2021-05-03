@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "GameObject.h"
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -7,6 +8,7 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b);
 void drawField(sf::RenderWindow &window);
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer);
 void rgb(sf::RectangleShape &obj, float i);
+
 const int WINDOW_MAX_X = 1500;
 const int WINDOW_MAX_Y = 820;
 
@@ -41,7 +43,7 @@ int main(){
     float index = 0;
     int gameState = 0; //0 Pause //1 Run //2 Game Over only if one reaches the score 10
     sf::Text scoreLeft("0 ", font), scoreRight(" 0", font);
-    std::string scoreL = "8  ", scoreR = "  0";
+    std::string scoreL = "0  ", scoreR = "  0";
     sf::Text gameOver("Game Over!", font), gameOver2("Press Escape to exit.", font);
     sf::Vector2f ballVec(1, 0);
 
@@ -166,7 +168,7 @@ int main(){
                             scoreR[2] = 48;
                             scoreR[1] = 49;
                         }else {
-                            scoreR[1] += 1;
+                            scoreR[2] += 1;
                         }
                     }else {
                         if (scoreL[0] == '9') {
@@ -254,6 +256,19 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b){
 bool menu(sf::RenderWindow &menu, sf::Font &font) {
     sf::Event event;
 
+    sf::RectangleShape ball({20, 20});
+    sf::RectangleShape leftPlayer({20, 100});
+    sf::RectangleShape rightPlayer({20, 100});
+
+    leftPlayer.setPosition({20, (WINDOW_MAX_Y - 100) /2});
+    leftPlayer.setFillColor(sf::Color::White);
+
+    rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y - 100) / 2});
+    rightPlayer.setFillColor(sf::Color::White);
+
+    ball.setPosition({(WINDOW_MAX_X - 20) / 2, (WINDOW_MAX_Y - 100) / 2});
+    ball.setFillColor(sf::Color::White);
+
     while (menu.isOpen()) {
         sf::Text textWelcome("Welcome to Pong!", font);
         sf::Text textChoice("Press left click to continue!", font);
@@ -282,6 +297,10 @@ bool menu(sf::RenderWindow &menu, sf::Font &font) {
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) return false;
         }
         menu.clear(sf::Color(0, 0, 0));
+        drawField(menu);
+        menu.draw(leftPlayer);
+        menu.draw(ball);
+        menu.draw(rightPlayer);
         menu.draw(textWelcome);
         menu.draw(textChoice);
         menu.display();
