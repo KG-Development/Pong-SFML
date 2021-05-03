@@ -9,12 +9,16 @@ void rgb(sf::RectangleShape &obj, float i);
 const int WINDOW_MAX_X = 1000;
 const int WINDOW_MAX_Y = 500;
 
+bool menu(sf::RenderWindow &menu);
+
 int main(){
 
-    sf::RenderWindow window(sf::VideoMode(WINDOW_MAX_X, WINDOW_MAX_Y), "Pong!");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_MAX_X, WINDOW_MAX_Y), "Pong!", sf::Style::Titlebar | sf::Style::Close);
     sf::RectangleShape ball({20, 20});
     sf::RectangleShape leftPlayer({20, 100});
     sf::RectangleShape rightPlayer({20, 100});
+
+    while(menu(window));
 
     leftPlayer.setPosition({20, (WINDOW_MAX_Y - 100) /2});
     leftPlayer.setFillColor(sf::Color::White);
@@ -132,20 +136,18 @@ int main(){
     }
     return 0;
 }
-void rgb(sf::RectangleShape &obj, float i){
 
+void rgb(sf::RectangleShape &obj, float i){
     float index = (float) sin((double) i);
     obj.setFillColor(sf::Color(index, index, index));
-
 }
+
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer){
-
     leftPlayer.setPosition({20, (WINDOW_MAX_Y - 100) /2});
-
     rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y - 100) / 2});
-
     ball.setPosition({(WINDOW_MAX_X - 20) / 2, (WINDOW_MAX_Y - 20) / 2});
 }
+
 void drawField(sf::RenderWindow &window){
 
     float y = 20;
@@ -167,12 +169,53 @@ void drawField(sf::RenderWindow &window){
 
     }
 }
-bool AABB(sf::RectangleShape &a, sf::RectangleShape &b){
 
+bool AABB(sf::RectangleShape &a, sf::RectangleShape &b){
     if((a.getPosition().x < b.getPosition().x + b.getSize().x) &&
        (a.getPosition().x + a.getSize().x > b.getPosition().x) &&
        (a.getPosition().y < b.getPosition().y + b.getSize().y) &&
        (a.getPosition().y + a.getSize().y > b.getPosition().y)) return true;
         return false;
+}
 
+
+bool menu(sf::RenderWindow &menu) {
+    sf::Event event;
+
+    while (menu.isOpen()) {
+        sf::Font font;
+        font.loadFromFile(".\\assets\\fonts\\origa___.ttf");
+
+        sf::Text textWelcome("Welcome to Pong!", font);
+        sf::Text textChoice("Press left click to continue!", font);
+
+        textWelcome.setCharacterSize(70);
+        textWelcome.setStyle(sf::Text::Bold);
+        textWelcome.setFillColor(sf::Color::White);
+
+        textChoice.setCharacterSize(30);
+        textChoice.setStyle(sf::Text::Bold);
+        textChoice.setFillColor(sf::Color::White);
+
+
+        sf::FloatRect textRect = textWelcome.getLocalBounds();
+        textWelcome.setOrigin(textRect.width / 2, 0);
+        textWelcome.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 3.0);
+
+        textRect = textChoice.getLocalBounds();
+        textChoice.setOrigin(textRect.width / 2, 0);
+        textChoice.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 2.0);
+
+        while (menu.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                menu.close();
+
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) return false;
+        }
+        menu.clear(sf::Color(0, 0, 0));
+        menu.draw(textWelcome);
+        menu.draw(textChoice);
+        menu.display();
+    }
+    return false;
 }
