@@ -47,9 +47,11 @@
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 			<Add directory="D:/Code_Blocks/librarys/SFML-2.5.1/include" />
+			<Add directory="C:/Users/kilia/Desktop/SFML/SFML-2.5.1-windows-gcc-5.1.0-tdm-32-bit/SFML-2.5.1/include" />
 		</Compiler>
 		<Linker>
 			<Add directory="D:/Code_Blocks/librarys/SFML-2.5.1/lib" />
+			<Add directory="C:/Users/kilia/Desktop/SFML/SFML-2.5.1-windows-gcc-5.1.0-tdm-32-bit/SFML-2.5.1/lib" />
 		</Linker>
 		<Unit filename="assets/script/lib/GameObjects.hpp" />
 		<Unit filename="include/GameObject.h" />
