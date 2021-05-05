@@ -44,20 +44,28 @@ int main(){
     int gameState = 0; //0 Pause //1 Run //2 Game Over only if one reaches the score 10
     sf::Text scoreLeft("0 ", font), scoreRight(" 0", font);
     std::string scoreL = "0  ", scoreR = "  0";
-    sf::Text gameOver("Game Over!", font), gameOver2("Press Escape to exit.", font);
+    sf::Text gameOver("Game Over!", font), gameOver2("Press Escape to exit.", font), pause("The game is currently paused 'ESC'", font);
     sf::Vector2f ballVec(1, 0);
 
-    //setting the scores up and giving them a position
+    //setting all the text up ready for drawing
     scoreLeft.setCharacterSize(45);
     scoreRight.setCharacterSize(45);
+    pause.setCharacterSize(50);
 
     scoreLeft.setStyle(sf::Text::Bold);
     scoreRight.setStyle(sf::Text::Bold);
+    pause.setStyle(sf::Text::Bold);
 
     scoreLeft.setFillColor(sf::Color::White);
     scoreRight.setFillColor(sf::Color::White);
+    pause.setFillColor(sf::Color::White);
 
     sf::FloatRect textRect;
+
+    //the pause text is always the same, so it is defined before the actual game loop
+    textRect = pause.getLocalBounds();
+    pause.setOrigin(textRect.width / 2, 0);
+    pause.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 3.0);
 
     while (window.isOpen()) {
         deltaTime = current.restart().asSeconds();
@@ -91,11 +99,12 @@ int main(){
                 window.close();
         }
 
-        switch(gameState){
+        switch(gameState) {
         case 0:
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && delay <= 0){
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && delay <= 0) {
                 gameState = 1;
                 delay = 0.1;
+
             }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)){
                 window.close();
             }
@@ -202,6 +211,9 @@ int main(){
             window.draw(rightPlayer);
             window.draw(scoreLeft);
             window.draw(scoreRight);
+            if (gameState == 0) {
+                window.draw(pause);
+            }
             window.display();
         }else {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
