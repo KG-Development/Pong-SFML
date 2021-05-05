@@ -8,6 +8,8 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b);
 void drawField(sf::RenderWindow &window);
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer);
 void rgb(sf::RectangleShape &obj, float i);
+void setTextOriginAndPosition(sf::Text &text, float startPosition = 3.0, float offset = 0.0);
+void setTextOriginAndPosition(sf::Text &text, float startPosition, float offset, float offSetX);
 
 const int WINDOW_MAX_X = 1500;
 const int WINDOW_MAX_Y = 820;
@@ -15,7 +17,6 @@ const int WINDOW_MAX_Y = 820;
 bool menu(sf::RenderWindow &menu, sf::Font &font);
 
 int main(){
-
     sf::RenderWindow window(sf::VideoMode(WINDOW_MAX_X, WINDOW_MAX_Y), "Pong!", sf::Style::Titlebar | sf::Style::Close);
     sf::RectangleShape ball({20, 20});
     sf::RectangleShape leftPlayer({20, 100});
@@ -63,9 +64,10 @@ int main(){
     sf::FloatRect textRect;
 
     //the pause text is always the same, so it is defined before the actual game loop
-    textRect = pause.getLocalBounds();
+    setTextOriginAndPosition(pause);
+    /*textRect = pause.getLocalBounds();
     pause.setOrigin(textRect.width / 2, 0);
-    pause.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 3.0);
+    pause.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 3.0);*/
 
     while (window.isOpen()) {
         deltaTime = current.restart().asSeconds();
@@ -74,13 +76,8 @@ int main(){
         scoreLeft.setString(scoreL);
         scoreRight.setString(scoreR);
 
-        textRect = scoreLeft.getLocalBounds();
-        scoreLeft.setOrigin(textRect.width / 2, 0);
-        scoreLeft.setPosition(WINDOW_MAX_X / 2.0 - 40, 25);
-
-        textRect = scoreRight.getLocalBounds();
-        scoreRight.setOrigin(textRect.width / 2, 0);
-        scoreRight.setPosition(WINDOW_MAX_X / 2.0 + 40, 25);
+        setTextOriginAndPosition(scoreLeft, 32.8, 0.0, 40);
+        setTextOriginAndPosition(scoreRight, 32.8, 0.0, -40);
 
         if(index < (2*3.64)){
             index += 1;
@@ -119,13 +116,8 @@ int main(){
             gameOver2.setStyle(sf::Text::Bold);
             gameOver2.setFillColor(sf::Color::White);
 
-            textRect = gameOver.getLocalBounds();
-            gameOver.setOrigin(textRect.width / 2, 0);
-            gameOver.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 2.5);
-
-            textRect = gameOver2.getLocalBounds();
-            gameOver2.setOrigin(textRect.width / 2, 0);
-            gameOver2.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 2.0);
+            setTextOriginAndPosition(gameOver, 2.5);
+            setTextOriginAndPosition(gameOver2, 2.5, 0.5);
 
             window.draw(gameOver);
             window.draw(gameOver2);
@@ -264,11 +256,13 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b){
         return false;
 }
 
-
 bool menu(sf::RenderWindow &menu, sf::Font &font) {
     sf::Event event;
+    sf::Text textWelcome("Welcome to Pong!", font);
+    sf::Text textChoice("Press left click to continue!", font);
+    sf::Text textLeaderboard("Press 'L' to get to Leaderboard", font);
+    int menuState = 0;
 
-    sf::RectangleShape ball({20, 20});
     sf::RectangleShape leftPlayer({20, 100});
     sf::RectangleShape rightPlayer({20, 100});
 
@@ -278,44 +272,63 @@ bool menu(sf::RenderWindow &menu, sf::Font &font) {
     rightPlayer.setPosition({WINDOW_MAX_X - 40, (WINDOW_MAX_Y - 100) / 2});
     rightPlayer.setFillColor(sf::Color::White);
 
-    ball.setPosition({(WINDOW_MAX_X - 20) / 2, (WINDOW_MAX_Y - 100) / 2});
-    ball.setFillColor(sf::Color::White);
+
+    //setting up all the text
+    textWelcome.setCharacterSize(70);
+    textWelcome.setStyle(sf::Text::Bold);
+    textWelcome.setFillColor(sf::Color::White);
+
+    textChoice.setCharacterSize(30);
+    textChoice.setStyle(sf::Text::Bold);
+    textChoice.setFillColor(sf::Color::White);
+
+    textLeaderboard.setCharacterSize(30);
+    textLeaderboard.setStyle(sf::Text::Bold);
+    textLeaderboard.setFillColor(sf::Color::White);
+
+    //calling the function for setting the text position (1. parameter is text, 2. startPosition, 3. offset
+    setTextOriginAndPosition(textWelcome, 3.0);
+    setTextOriginAndPosition(textChoice, 3.0, 0.7);
+    setTextOriginAndPosition(textLeaderboard, 3.0, 0.9);
 
     while (menu.isOpen()) {
-        sf::Text textWelcome("Welcome to Pong!", font);
-        sf::Text textChoice("Press left click to continue!", font);
-
-        textWelcome.setCharacterSize(70);
-        textWelcome.setStyle(sf::Text::Bold);
-        textWelcome.setFillColor(sf::Color::White);
-
-        textChoice.setCharacterSize(30);
-        textChoice.setStyle(sf::Text::Bold);
-        textChoice.setFillColor(sf::Color::White);
-
-
-        sf::FloatRect textRect = textWelcome.getLocalBounds();
-        textWelcome.setOrigin(textRect.width / 2, 0);
-        textWelcome.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 3.0);
-
-        textRect = textChoice.getLocalBounds();
-        textChoice.setOrigin(textRect.width / 2, 0);
-        textChoice.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 2.0);
-
         while (menu.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 menu.close();
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) return false;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
+                menuState = 1;
+            }
         }
         menu.clear(sf::Color(0, 0, 0));
-        drawField(menu);
-        menu.draw(leftPlayer);
-        menu.draw(ball);
-        menu.draw(rightPlayer);
-        menu.draw(textWelcome);
-        menu.draw(textChoice);
+        if (!menuState) {
+            drawField(menu);
+            menu.draw(leftPlayer);
+            menu.draw(rightPlayer);
+            menu.draw(textWelcome);
+            menu.draw(textChoice);
+            menu.draw(textLeaderboard);
+        }else {
+
+        }
         menu.display();
     }
     return false;
+}
+
+void setTextOriginAndPosition(sf::Text &text, float startPosition, float offset) {
+    sf::FloatRect textRect;
+
+    textRect = text.getLocalBounds();
+    text.setOrigin(textRect.width / 2, 0);
+    text.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / (startPosition - offset));
+}
+
+void setTextOriginAndPosition(sf::Text &text, float startPosition, float offset, float offSetX) {
+    sf::FloatRect textRect;
+
+    textRect = text.getLocalBounds();
+    text.setOrigin(textRect.width / 2, 0);
+    text.setPosition(WINDOW_MAX_X / 2.0 - offSetX, WINDOW_MAX_Y / (startPosition - offset));
 }
