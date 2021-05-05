@@ -8,8 +8,10 @@ bool AABB(sf::RectangleShape &a, sf::RectangleShape &b);
 void drawField(sf::RenderWindow &window);
 void reset(sf::RectangleShape &leftPlayer, sf::RectangleShape &ball, sf::RectangleShape &rightPlayer);
 void rgb(sf::RectangleShape &obj, float i);
+
 void setTextOriginAndPosition(sf::Text &text, float startPosition = 3.0, float offset = 0.0);
 void setTextOriginAndPosition(sf::Text &text, float startPosition, float offset, float offSetX);
+void setCharacterSizeStyleAndColor(sf::Text &text, int charSize, sf::Text::Style style, sf::Color color);
 
 const int WINDOW_MAX_X = 1500;
 const int WINDOW_MAX_Y = 820;
@@ -49,25 +51,12 @@ int main(){
     sf::Vector2f ballVec(1, 0);
 
     //setting all the text up ready for drawing
-    scoreLeft.setCharacterSize(45);
-    scoreRight.setCharacterSize(45);
-    pause.setCharacterSize(50);
-
-    scoreLeft.setStyle(sf::Text::Bold);
-    scoreRight.setStyle(sf::Text::Bold);
-    pause.setStyle(sf::Text::Bold);
-
-    scoreLeft.setFillColor(sf::Color::White);
-    scoreRight.setFillColor(sf::Color::White);
-    pause.setFillColor(sf::Color::White);
-
-    sf::FloatRect textRect;
+    setCharacterSizeStyleAndColor(scoreLeft, 45, sf::Text::Bold, sf::Color::White);
+    setCharacterSizeStyleAndColor(scoreRight, 45, sf::Text::Bold, sf::Color::White);
+    setCharacterSizeStyleAndColor(pause, 50, sf::Text::Bold, sf::Color::White);
 
     //the pause text is always the same, so it is defined before the actual game loop
     setTextOriginAndPosition(pause);
-    /*textRect = pause.getLocalBounds();
-    pause.setOrigin(textRect.width / 2, 0);
-    pause.setPosition(WINDOW_MAX_X / 2.0, WINDOW_MAX_Y / 3.0);*/
 
     while (window.isOpen()) {
         deltaTime = current.restart().asSeconds();
@@ -108,13 +97,9 @@ int main(){
             break;
         case 2:
             window.clear(sf::Color(0, 0, 0));
-            gameOver.setCharacterSize(60);
-            gameOver.setStyle(sf::Text::Bold);
-            gameOver.setFillColor(sf::Color::White);
 
-            gameOver2.setCharacterSize(40);
-            gameOver2.setStyle(sf::Text::Bold);
-            gameOver2.setFillColor(sf::Color::White);
+            setCharacterSizeStyleAndColor(gameOver, 60, sf::Text::Bold, sf::Color::White);
+            setCharacterSizeStyleAndColor(gameOver2, 40, sf::Text::Bold, sf::Color::White);
 
             setTextOriginAndPosition(gameOver, 2.5);
             setTextOriginAndPosition(gameOver2, 2.5, 0.5);
@@ -274,17 +259,9 @@ bool menu(sf::RenderWindow &menu, sf::Font &font) {
 
 
     //setting up all the text
-    textWelcome.setCharacterSize(70);
-    textWelcome.setStyle(sf::Text::Bold);
-    textWelcome.setFillColor(sf::Color::White);
-
-    textChoice.setCharacterSize(30);
-    textChoice.setStyle(sf::Text::Bold);
-    textChoice.setFillColor(sf::Color::White);
-
-    textLeaderboard.setCharacterSize(30);
-    textLeaderboard.setStyle(sf::Text::Bold);
-    textLeaderboard.setFillColor(sf::Color::White);
+    setCharacterSizeStyleAndColor(textWelcome, 70, sf::Text::Bold, sf::Color::White);
+    setCharacterSizeStyleAndColor(textChoice, 30, sf::Text::Bold, sf::Color::White);
+    setCharacterSizeStyleAndColor(textLeaderboard, 30, sf::Text::Bold, sf::Color::White);
 
     //calling the function for setting the text position (1. parameter is text, 2. startPosition, 3. offset
     setTextOriginAndPosition(textWelcome, 3.0);
@@ -331,4 +308,10 @@ void setTextOriginAndPosition(sf::Text &text, float startPosition, float offset,
     textRect = text.getLocalBounds();
     text.setOrigin(textRect.width / 2, 0);
     text.setPosition(WINDOW_MAX_X / 2.0 - offSetX, WINDOW_MAX_Y / (startPosition - offset));
+}
+
+void setCharacterSizeStyleAndColor(sf::Text &text, int charSize, sf::Text::Style style, sf::Color color) {
+    text.setCharacterSize(charSize);
+    text.setStyle(style);
+    text.setFillColor(color);
 }
